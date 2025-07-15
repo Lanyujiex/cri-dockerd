@@ -115,7 +115,9 @@ func (ds *dockerService) CreateContainer(
 			Runtime: sandboxInfo.HostConfig.Runtime,
 		},
 	}
-
+	if rootSize, exists := sandboxConfig.Labels["limits.docker.io/rootfs"]; exists {
+		createConfig.HostConfig.StorageOpt = map[string]string{"size": rootSize}
+	}
 	// Only request relabeling if the pod provides an SELinux context. If the pod
 	// does not provide an SELinux context relabeling will label the volume with
 	// the container's randomly allocated MCS label. This would restrict access
